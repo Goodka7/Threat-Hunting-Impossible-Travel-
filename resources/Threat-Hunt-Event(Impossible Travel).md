@@ -13,15 +13,25 @@ A "Bad Actor" attempts to access an account from a geographically distant locati
 3. **Post-Attack Behavior:**
    - Attempt sensitive actions (e.g., modify user settings, view confidential data).
    - Logout after completing suspicious activity.
-
+     
 ---
 
 ## Tables Used to Detect IoCs:
 
-| **Table**         | **Description**                                                                                     |
-|-------------------|-----------------------------------------------------------------------------------------------------|
-| **SigninLogs**     | Provides login records, including IP addresses, locations, and timestamps.                        |
-| **AzureActivity**  | Tracks user and administrative activities within Azure.                                            |
+| **Parameter**       | **Description**                                                                 |
+|---------------------|---------------------------------------------------------------------------------|
+| **Name**| SigninLogs                                                                     |
+| **Info**| [SigninLogs Table Documentation](https://learn.microsoft.com/en-us/azure/active-directory/reports-monitoring/reference-signins-log) |
+| **Purpose**| Used to detect login events, including timestamps, IP addresses, and geographic locations. |
+
+| **Parameter**       | **Description**                                                                 |
+|---------------------|---------------------------------------------------------------------------------|
+| **Name**| AzureActivity                                                                  |
+| **Info**| [AzureActivity Table Documentation](https://learn.microsoft.com/en-us/azure/azure-monitor/reference/tables/azureactivity) |
+| **Purpose**         | Used to track administrative and user activities for context around anomalous logins. |
+
+---
+     |
 
 ---
 
