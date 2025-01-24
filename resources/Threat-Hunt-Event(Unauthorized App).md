@@ -12,22 +12,21 @@
 ## Tables Used to Detect IoCs:
 | **Parameter**       | **Description**                                                              |
 |---------------------|------------------------------------------------------------------------------|
-| **Name**| DeviceLogonEvents                                                            |
-| **Info**| https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-devicelogonevents-table |
-| **Purpose**| Used to detect successful RDP logins, including login source IP and username. |
+| **Name**            | DeviceProcessEvents                                                           |
+| **Info**            | https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-deviceprocessevents-table |
+| **Purpose**         | Used to detect the execution of unauthorized or suspicious applications on the device. |
 
 | **Parameter**       | **Description**                                                              |
 |---------------------|------------------------------------------------------------------------------|
-| **Name**| DeviceNetworkEvents                                                           |
-| **Info**| https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-devicenetworkevents-table |
-| **Purpose**| Used to detect network activity over port 3389 and connections from suspicious IP addresses. |
+| **Name**            | DeviceFileEvents                                                             |
+| **Info**            | https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-devicefileevents-table |
+| **Purpose**         | Used to detect the creation or modification of files that may indicate unauthorized application usage. |
 
 | **Parameter**       | **Description**                                                              |
 |---------------------|------------------------------------------------------------------------------|
-| **Name**| DeviceProcessEvents                                                           |
-| **Info**| https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-deviceprocessevents-table |
-| **Purpose**| Used to detect RDP session creation or any commands executed remotely. |
-
+| **Name**            | DeviceRegistryEvents                                                         |
+| **Info**            | https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-deviceregistryevents-table |
+| **Purpose**         | Used to detect changes in system registry related to unauthorized application installation or execution. |
 
 ---
 
@@ -60,6 +59,7 @@ DeviceProcessEvents
 | where ActionType in~ ("Terminate", "Suspend", "Modify")
 | project Timestamp, DeviceName, TargetProcessName, InitiatingProcessCommandLine
 ```
+
 ---
 
 ## Created By:
