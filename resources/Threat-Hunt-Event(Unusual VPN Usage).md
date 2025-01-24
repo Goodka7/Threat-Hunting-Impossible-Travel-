@@ -1,56 +1,41 @@
-# Threat Event (Unusual VPN Usage)
-**Unusual VPN Usage Detected from Non-Standard Locations**
+# Threat Event: Impossible Travel - Anomalous Login Locations
 
-## Steps the "Bad Actor" Took to Create Logs and IoCs:
-1. **VPN Connection Attempt**: The attacker connects to the organization's VPN, appearing from an unusual geographic location or device.
-2. **Authentication**: The attacker successfully authenticates using stolen credentials (or exploits weak authentication methods).
-3. **Abnormal Access Patterns**: The attacker begins accessing sensitive internal resources that are not typically required for their role.
-4. **Lateral Movement**: The attacker may attempt to move laterally within the organization, utilizing the VPN connection for internal access.
-5. **Cleanup**: The attacker may attempt to delete logs or use anti-forensics tools to evade detection.
+## Scenario Overview
+A "Bad Actor" attempts to access an account from two geographically distant locations in a short timeframe, simulating impossible travel. This anomaly triggers alerts in Sentinel when configured correctly.
+
+### Steps Taken by "Bad Actor":
+1. **Initial Login:**
+   - Login from your VM using your current IP.
+   - Access a web service or application using your credentials.
+2. **Simulated Travel:**
+   - Use a VPN or proxy to switch to a different geographic location (e.g., the US, Europe).
+   - Perform another login attempt on the same service/application.
+3. **Post-Attack Behavior:**
+   - Attempt sensitive actions (e.g., modify user settings, view confidential data).
+   - Logout after completing suspicious activity.
 
 ---
 
 ## Tables Used to Detect IoCs:
 
-| **Parameter**       | **Description**                                                              |
-|---------------------|------------------------------------------------------------------------------|
-| **Name**| DeviceNetworkEvents                                                           |
-| **Info**| [Link to DeviceNetworkEvents Table](https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-devicenetworkevents-table) |
-| **Purpose**| Used to detect VPN connection attempts from unusual IP addresses or locations. |
-
-| **Parameter**       | **Description**                                                              |
-|---------------------|------------------------------------------------------------------------------|
-| **Name**| DeviceLogonEvents                                                             |
-| **Info**| [Link to DeviceLogonEvents Table](https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-devicelogonevents-table) |
-| **Purpose**| Used to detect logins from unexpected locations or at unusual times. |
-
-| **Parameter**       | **Description**                                                              |
-|---------------------|------------------------------------------------------------------------------|
-| **Name**| DeviceProcessEvents                                                           |
-| **Info**| [Link to DeviceProcessEvents Table](https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-deviceprocessevents-table) |
-| **Purpose**| Used to detect VPN client software usage (e.g., Cisco AnyConnect, OpenVPN). |
+| **Table**         | **Description**                                                                                     |
+|-------------------|-----------------------------------------------------------------------------------------------------|
+| **SigninLogs**     | Provides login records, including IP addresses, locations, and timestamps.                        |
+| **AzureActivity**  | Tracks user and administrative activities within Azure.                                            |
 
 ---
 
-## Related Queries:
+## Detection Queries:
+
+### Impossible Travel Detection
 ```kql
-// Detecting VPN connection attempts from non-standard locations
-DeviceNetworkEvents
-| where RemoteIP !in ("known vpn IPs")  // Define known VPN IPs to compare
-| where InitiatingProcessFileName == "vpnclient.exe" // Adjust for your VPN client name
-| project Timestamp, DeviceName, RemoteIP, InitiatingProcessFileName
+SigninLogs
+| summarize Locations = make_set(Location), LoginCount = count() by UserPrincipalName, bin(TimeGenerated, 1h)
+| where array_length(Locations) > 1
+| extend Distance = geo_distance_2points(set_element(Locations, 0), set_element(Locations, 1)) // If location data includes latitude/longitude
+| where Distance > 5000 // Distance in kilometers indicating impossible travel
+| project TimeGenerated, UserPrincipalName, Locations, LoginCount
 
-// Detecting VPN login from unusual times or geographic locations
-DeviceLogonEvents
-| where LogonTime between (datetime(2025-01-20) .. datetime(2025-01-21)) // Adjust date range
-| where RemoteIP != "known locations"
-| project Timestamp, DeviceName, AccountName, LogonTime, RemoteIP
-
-// Detecting abnormal access patterns after VPN login
-DeviceNetworkEvents
-| where InitiatingProcessFileName == "vpnclient.exe"
-| where RemoteIP in ("Internal IP ranges")
-| project Timestamp, DeviceName, AccountName, RemoteIP, RemotePort
 ```
 
 ---
