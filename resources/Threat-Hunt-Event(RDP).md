@@ -19,19 +19,19 @@
 | **Parameter**       | **Description**                                                              |
 |---------------------|------------------------------------------------------------------------------|
 | **Name**| DeviceLogonEvents                                                            |
-| **Info**| [Link to DeviceLogonEvents Table](https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-devicelogonevents-table) |
+| **Info**| https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-devicelogonevents-table |
 | **Purpose**| Used to detect successful RDP logins, including login source IP and username. |
 
 | **Parameter**       | **Description**                                                              |
 |---------------------|------------------------------------------------------------------------------|
 | **Name**| DeviceNetworkEvents                                                           |
-| **Info**| [Link to DeviceNetworkEvents Table](https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-devicenetworkevents-table) |
+| **Info**| https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-devicenetworkevents-table |
 | **Purpose**| Used to detect network activity over port 3389 and connections from suspicious IP addresses. |
 
 | **Parameter**       | **Description**                                                              |
 |---------------------|------------------------------------------------------------------------------|
 | **Name**| DeviceProcessEvents                                                           |
-| **Info**| [Link to DeviceProcessEvents Table](https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-deviceprocessevents-table) |
+| **Info**| https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-deviceprocessevents-table |
 | **Purpose**| Used to detect RDP session creation or any commands executed remotely. |
 
 ---
