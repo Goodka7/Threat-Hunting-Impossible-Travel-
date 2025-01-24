@@ -31,12 +31,6 @@ A "Bad Actor" attempts to access an account from a geographically distant locati
 | **Purpose**         | Used to track administrative and user activities for context around anomalous logins. |
 
 ---
-     |
-## Detection Queries:
-
-### Impossible Travel Detection
-```kql
----
 
 ## Related Queries:
 ```kql
