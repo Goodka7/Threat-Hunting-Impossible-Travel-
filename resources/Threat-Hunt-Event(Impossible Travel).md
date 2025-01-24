@@ -21,13 +21,13 @@ A "Bad Actor" attempts to access an account from a geographically distant locati
 | **Parameter**       | **Description**                                                                 |
 |---------------------|---------------------------------------------------------------------------------|
 | **Name**| SigninLogs                                                                     |
-| **Info**| [SigninLogs Table Documentation](https://learn.microsoft.com/en-us/azure/active-directory/reports-monitoring/reference-signins-log) |
+| **Info**| https://learn.microsoft.com/en-us/azure/active-directory/reports-monitoring/reference-signins-log |
 | **Purpose**| Used to detect login events, including timestamps, IP addresses, and geographic locations. |
 
 | **Parameter**       | **Description**                                                                 |
 |---------------------|---------------------------------------------------------------------------------|
 | **Name**| AzureActivity                                                                  |
-| **Info**| [AzureActivity Table Documentation](https://learn.microsoft.com/en-us/azure/azure-monitor/reference/tables/azureactivity) |
+| **Info**| https://learn.microsoft.com/en-us/azure/azure-monitor/reference/tables/azureactivity |
 | **Purpose**         | Used to track administrative and user activities for context around anomalous logins. |
 
 ---
