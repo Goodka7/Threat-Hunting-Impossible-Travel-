@@ -1,7 +1,7 @@
 # Threat Event: Impossible Travel - Anomalous Login Locations
 
 ## Scenario Overview
-A "Bad Actor" attempts to access an account from two geographically distant locations in a short timeframe, simulating impossible travel. This anomaly triggers alerts in Sentinel when configured correctly.
+A "Bad Actor" attempts to access an account from two geographically distant locations in a short timeframe, simulating impossible travel.
 
 ### Steps Taken by "Bad Actor":
 1. **Initial Login:**
