@@ -1,9 +1,7 @@
-# Threat Event: Impossible Travel - Anomalous Login Locations
+# Threat Event (Impossible Travel)
+**Anomalous Login Locations**
 
-## Scenario Overview
-A "Bad Actor" attempts to access an account from a geographically distant location in a short timeframe, simulating impossible travel.
-
-### Steps Taken by "Bad Actor":
+## Steps Taken by "Bad Actor":
 1. **Initial Login:**
    - Login from your VM using your current IP.
    - Access a web service or application using your credentials.
