@@ -1,4 +1,4 @@
-# Threat Event (Privilege Escalation via Exploiting Vulnerabilities)
+# Threat Event (Privilege Escalation)
 **Exploitation of Known Vulnerabilities for Privilege Escalation**
 
 ## Steps the "Bad Actor" Took to Create Logs and IoCs:
