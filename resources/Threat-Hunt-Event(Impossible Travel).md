@@ -32,9 +32,6 @@ A "Bad Actor" attempts to access an account from a geographically distant locati
 
 ---
      |
-
----
-
 ## Detection Queries:
 
 ### Impossible Travel Detection
@@ -45,7 +42,12 @@ SigninLogs
 | extend Distance = geo_distance_2points(set_element(Locations, 0), set_element(Locations, 1)) // If location data includes latitude/longitude
 | where Distance > 5000 // Distance in kilometers indicating impossible travel
 | project TimeGenerated, UserPrincipalName, Locations, LoginCount
-
+---
+SigninLogs
+| summarize GeoLocations = make_set(Location), TimeWindow = max(TimeGenerated) - min(TimeGenerated) by UserPrincipalName
+| where array_length(GeoLocations) > 1
+| where TimeWindow < 1h // Change to desired threshold
+| project UserPrincipalName, GeoLocations, TimeWindow
 ```
 
 ---
