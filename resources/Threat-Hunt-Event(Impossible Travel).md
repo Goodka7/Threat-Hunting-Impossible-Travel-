@@ -36,18 +36,37 @@ A "Bad Actor" attempts to access an account from a geographically distant locati
 
 ### Impossible Travel Detection
 ```kql
-SigninLogs
-| summarize Locations = make_set(Location), LoginCount = count() by UserPrincipalName, bin(TimeGenerated, 1h)
-| where array_length(Locations) > 1
-| extend Distance = geo_distance_2points(set_element(Locations, 0), set_element(Locations, 1)) // If location data includes latitude/longitude
-| where Distance > 5000 // Distance in kilometers indicating impossible travel
-| project TimeGenerated, UserPrincipalName, Locations, LoginCount
 ---
+
+## Related Queries:
+```kql
+// Detect all login attempts, including location and IP address details
 SigninLogs
-| summarize GeoLocations = make_set(Location), TimeWindow = max(TimeGenerated) - min(TimeGenerated) by UserPrincipalName
-| where array_length(GeoLocations) > 1
-| where TimeWindow < 1h // Change to desired threshold
-| project UserPrincipalName, GeoLocations, TimeWindow
+| project Timestamp, UserPrincipalName, AppDisplayName, IPAddress, Location
+
+// Identify login attempts originating from different geographic regions within a short time frame
+SigninLogs
+| extend TimeGap = datetime_diff('minute', next(Timestamp), Timestamp)
+| where Location != next(Location) and TimeGap < 30
+| project Timestamp, UserPrincipalName, IPAddress, Location, TimeGap
+| order by Timestamp desc
+
+// Flag suspicious IPs that do not match known or frequent login locations for a user
+SigninLogs
+| summarize count() by UserPrincipalName, Location, IPAddress
+| where count_ < 5
+| project UserPrincipalName, Location, IPAddress
+
+// Detect administrative actions performed shortly after a suspicious login attempt
+AzureActivity
+| where Caller in (SigninLogs | where Location != next(Location) | project UserPrincipalName)
+| where ActivityStatusValue == "Success"
+| project EventTimeStamp, Caller, OperationName, ActivityStatusValue, ResourceId
+
+// Check if user has repeated logins from the same suspicious IP across multiple services
+SigninLogs
+| summarize ServicesAccessed = make_list(AppDisplayName) by UserPrincipalName, IPAddress
+| project UserPrincipalName, IPAddress, ServicesAccessed
 ```
 
 ---
