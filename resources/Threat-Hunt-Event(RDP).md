@@ -60,3 +60,27 @@ DeviceProcessEvents
 | where ProcessCommandLine contains "cmd.exe" or "powershell.exe"
 | where InitiatingProcessFileName == "mstsc.exe" // mstsc.exe is the RDP client
 | project Timestamp, DeviceName, AccountName, ProcessCommandLine, InitiatingProcessFileName
+```
+---
+
+## Created By:
+- **Author Name**: James Harrington
+- **Author Contact**: https://www.linkedin.com/in/Goodk47/
+- **Date**: January 20, 2024
+
+## Validated By:
+- **Reviewer Name**: 
+- **Reviewer Contact**: 
+- **Validation Date**: 
+
+---
+
+## Additional Notes:
+- **None**
+
+---
+
+## Revision History:
+| **Version** | **Changes**                   | **Date**         | **Modified By**   |
+|-------------|-------------------------------|------------------|-------------------|
+| 1.0         | Initial draft                  | `January 24, 2024`  | `James Harrington`   
