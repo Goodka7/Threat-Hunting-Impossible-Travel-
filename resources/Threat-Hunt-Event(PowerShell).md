@@ -61,3 +61,20 @@ DeviceFileEvents
 | where FileName == "payload.exe" and ActionType == "Deleted"
 | project Timestamp, DeviceName, FileName, ActionType
 ```
+
+---
+
+## Created By:
+- **Author Name**: James Harrington
+- **Author Contact**: https://www.linkedin.com/in/Goodk47/
+- **Date**: January 24, 2024
+
+## Validated By:
+- **Reviewer Name**: 
+- **Reviewer Contact**: 
+- **Validation Date**: 
+
+---
+
+## Additional Notes:
+- **None**
