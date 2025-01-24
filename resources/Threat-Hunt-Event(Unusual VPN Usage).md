@@ -14,17 +14,21 @@
 
 | **Parameter**       | **Description**                                                              |
 |---------------------|------------------------------------------------------------------------------|
-| **Name**            | DeviceNetworkEvents                                                           |
-| **Info**            | [Link to DeviceNetworkEvents Table](https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-devicenetworkevents-table) |
-| **Purpose**         | Used to detect VPN connection attempts from unusual IP addresses or locations. |
+| **Name**| DeviceNetworkEvents                                                           |
+| **Info**| [Link to DeviceNetworkEvents Table](https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-devicenetworkevents-table) |
+| **Purpose**| Used to detect VPN connection attempts from unusual IP addresses or locations. |
+
 | **Parameter**       | **Description**                                                              |
-| **Name**            | DeviceLogonEvents                                                             |
-| **Info**            | [Link to DeviceLogonEvents Table](https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-devicelogonevents-table) |
-| **Purpose**         | Used to detect logins from unexpected locations or at unusual times. |
+|---------------------|------------------------------------------------------------------------------|
+| **Name**| DeviceLogonEvents                                                             |
+| **Info**| [Link to DeviceLogonEvents Table](https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-devicelogonevents-table) |
+| **Purpose**| Used to detect logins from unexpected locations or at unusual times. |
+
 | **Parameter**       | **Description**                                                              |
-| **Name**            | DeviceProcessEvents                                                           |
-| **Info**            | [Link to DeviceProcessEvents Table](https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-deviceprocessevents-table) |
-| **Purpose**         | Used to detect VPN client software usage (e.g., Cisco AnyConnect, OpenVPN). |
+|---------------------|------------------------------------------------------------------------------|
+| **Name**| DeviceProcessEvents                                                           |
+| **Info**| [Link to DeviceProcessEvents Table](https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-deviceprocessevents-table) |
+| **Purpose**| Used to detect VPN client software usage (e.g., Cisco AnyConnect, OpenVPN). |
 
 ---
 
