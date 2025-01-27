@@ -27,8 +27,6 @@ Management is concerned about potential unauthorized access attempts from geogra
 
 Searched for any suspicious logon activities, such as multiple logins from distant IP addresses in a short time.
 
-### Observations and Reason for Narrowing Scope
-
 The dataset included login events across multiple devices and user accounts, with notable activity for the account `labuser`. Logins were recorded for various devices, but the focus has been placed on the machine `windows-target-1`, which exhibited activity indicative of potential compromise. Many entries lacked `RemoteIP` details, reducing their relevance to identifying geographic or source anomalies.
 
 The scope was been refined to prioritize:
