@@ -18,15 +18,21 @@
 
 | **Parameter**       | **Description**                                                                 |
 |---------------------|---------------------------------------------------------------------------------|
-| **Name**| SigninLogs                                                                     |
-| **Info**| https://learn.microsoft.com/en-us/azure/active-directory/reports-monitoring/reference-signins-log |
-| **Purpose**| Used to detect login events, including timestamps, IP addresses, and geographic locations. |
+| **Name**| DeviceLogonEvents                                                             |
+| **Info**| https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/device-logon-events |
+| **Purpose**| Used to detect login events, including timestamps, usernames, and source IP addresses. |
 
 | **Parameter**       | **Description**                                                                 |
 |---------------------|---------------------------------------------------------------------------------|
-| **Name**| AzureActivity                                                                  |
-| **Info**| https://learn.microsoft.com/en-us/azure/azure-monitor/reference/tables/azureactivity |
-| **Purpose**         | Used to track administrative and user activities for context around anomalous logins. |
+| **Name**| DeviceProcessEvents                                                          |
+| **Info**| https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/device-process-events |
+| **Purpose**| Used to track commands and processes executed on the victim machine, such as `ipconfig` to simulate user activity. |
+
+| **Parameter**       | **Description**                                                                 |
+|---------------------|---------------------------------------------------------------------------------|
+| **Name**| DeviceNetworkEvents                                                          |
+| **Info**| https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/device-network-events |
+| **Purpose**| Used to detect network activity, including geographic location changes (e.g., VPN usage) and source/destination IP addresses. |
 
 ---
 
