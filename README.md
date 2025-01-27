@@ -23,44 +23,47 @@ Management is concerned about potential unauthorized access attempts from geogra
 
 ## Steps Taken
 
-### 1. Searched the `DeviceRegistryEvents` Table
+### 1. Searched the `DeviceLogonEvents' Table
 
-Searched for any registry that action type held the value "RegistryValueSet" or "RegistryValueDeleted".
+Searched for any suspicious logon activities, such as multiple logins from distant IP addresses in a short time.
 
-The dataset reveals registry activity originating from the device "thscenariovm" that aligns with concerns about tampering with critical system configurations. On **Jan 26, 2025, at 1:03:30 PM**, a command executed by `cmd.exe` deleted cached standalone update binaries, targeting the key `HKEY_CURRENT_USER\S-1-5-21-2408751320-1394585240-3964484208-500\SOFTWARE\Microsoft\WindowsUpdate` and altering the value `Delete Cached Standalone Update Binary`. This activity suggests potential interference with the system update mechanism. 
+### Observations and Reason for Narrowing Scope
 
-Additionally, an update to the `OneDrive` path on **Jan 26, 2025, at 1:03:10 PM** indicates possible tampering with user-specific configurations. These events warrant further investigation to assess whether they represent unauthorized modifications aimed at weakening system defenses or enabling malicious activities.
+The dataset included login events across multiple devices and user accounts, with notable activity for the account `labuser`. Logins were recorded for various devices, but the focus has been placed on the machine `windows-target-1`, which exhibited activity indicative of potential compromise. Many entries lacked `RemoteIP` details, reducing their relevance to identifying geographic or source anomalies.
+
+The scope was been refined to prioritize:
+- Login events originating from `windows-target-1` to identify patterns of unauthorized access.
+- Activity associated with the account `labuser` to trace potential misuse of credentials.
+- Available `RemoteIP` data to detect geographic variations and potential indicators of lateral movement or external compromise.
 
 **Query used to locate events:**
 
 ```kql
-DeviceRegistryEvents
-| where DeviceName == "thscenariovm"
-| where ActionType in ("RegistryValueSet", "RegistryValueDeleted")
-| project Timestamp, DeviceName, RegistryKey, RegistryValueName, RegistryValueData, ActionType
+DeviceLogonEvents
+| project Timestamp, AccountName, DeviceName, RemoteIP
+| order by Timestamp desc
 ```
-<img width="1212" alt="image" src="https://github.com/user-attachments/assets/dca4eca9-ae52-4e44-bb01-596a9a4e80af">
+<img width="1212" alt="image" src="https://github.com/user-attachments/assets/6e3da45a-4ab1-4d06-8ad3-fad9a877ae70">
 
 ---
 
-### 2. Searched the `DeviceProcessEvents` Table
+### 2. Searched the `DeviceLogonEvents` Table
 
-Searched for any process events that held "regedit.exe", "powershell.exe", "cmd.exe", or "sc.exe" in the FileName.
+Searched for login events on the device `windows-target-1` associated with the account `labuser`.
 
-The dataset reveals process activity on the device "thscenariovm" involving commands executed by `cmd.exe` and `powershell.exe`, both of which are commonly used for system configuration changes. On **Jan 26, 2025, at 12:49:08 PM**, a command initiated by `runcommandextension.exe` executed `cmd.exe` with a PowerShell script using the `-ExecutionPolicy Unrestricted` flag. This was followed by similar commands at **1:16:13 PM** and **1:24:47 PM**, suggesting repeated attempts to run scripts with unrestricted policies. Additionally, on **Jan 26, 2025, at 12:41:03 PM**, a command was initiated by `powershell.exe` to execute another PowerShell script with potentially unsafe parameters, such as `-ExecutionPolicy Bypass`. 
+The dataset reveals multiple login events for the user `labuser` on the device `windows-target-1`, originating from two distinct IP addresses. On **Jan 27, 2025, at 11:14:46 AM**, login activity was recorded from the IP `89.117.41.164`. Earlier, at **11:12:31 AM**, a login was recorded from the IP `135.237.186.85`. These logins occurred within a short timeframe, indicating geographically disparate access points.
 
-These activities highlight the use of elevated PowerShell and command-line operations, which align with potential tampering with critical configurations or the execution of unauthorized scripts. The repeated usage of `-ExecutionPolicy Unrestricted` and `-Bypass` flags warrants further investigation to determine whether these actions were authorized or indicative of malicious intent.
+This activity indicates Impossible Travel, where a single account is used to log in from different locations in rapid succession. The presence of these distinct IPs suggests potential credential compromise or the use of obfuscation techniques, such as a VPN, to simulate external access. Further analysis of network and process events may provide additional context to validate this behavior.
 
 **Query used to locate event:**
 
 ```kql
-DeviceProcessEvents
-| where DeviceName == "thscenariovm"
-| where FileName in~ ("regedit.exe", "powershell.exe", "cmd.exe", "sc.exe")
-| where ProcessCommandLine has_any ("Set-", "Disable", "Enable", "-ExecutionPolicy", "-NoProfile", "-NonInteractive", "bypass", "New-ItemProperty")
-| project Timestamp, DeviceName, FileName, ProcessCommandLine, InitiatingProcessFileName, AccountName
+DeviceLogonEvents
+| where DeviceName == "windows-target-1" and AccountName == "labuser"
+| project Timestamp, AccountName, DeviceName, RemoteIP
+| order by Timestamp desc
 ```
-<img width="1212" alt="image" src="https://github.com/user-attachments/assets/926684fe-1507-4af8-abc5-3c8d466f3de2">
+<img width="1212" alt="image" src="https://github.com/user-attachments/assets/c4aabb61-e510-4482-bd3f-0481b04546ad">
 
 ---
 
