@@ -61,7 +61,7 @@ DeviceLogonEvents
 | project Timestamp, AccountName, DeviceName, RemoteIP
 | order by Timestamp desc
 ```
-<img width="1212" alt="image" src="https://github.com/user-attachments/assets/c4aabb61-e510-4482-bd3f-0481b04546ad">
+<img width="1212" alt="image" src="https://github.com/user-attachments/assets/45288972-df92-47bb-9acc-45959bc34f3d">
 
 ---
 
