@@ -9,17 +9,16 @@
 - Kusto Query Language (KQL)
 - PowerShell
 
-##  Scenario
+## Scenario
 
-Management is concerned about potential tampering with critical system configurations that could weaken security defenses or enable malicious activities. Recent security logs have revealed irregular modifications to registry keys and firewall rules, including attempts to disable Windows Defender and change system policies. The goal is to detect suspicious system configuration changes, such as unauthorized registry edits, firewall modifications, or service disruptions, and analyze any related security incidents. If any suspicious activity is identified, notify management for further investigation.
+Management is concerned about potential unauthorized access attempts from geographically distant locations, which may indicate compromised credentials or unauthorized user activity. Recent security logs have revealed irregular login attempts from multiple locations within a short time frame, suggesting the possibility of impossible travel. The goal is to detect suspicious login activity, such as logins from distant IPs that occur simultaneously or within an unrealistic timeframe, and analyze any related security incidents. If such activity is identified, notify management for further investigation.
 
 ### High-Level PowerShell Discovery Plan
 
-- **Check `DeviceRegistryEvents`** for unauthorized registry changes, particularly those targeting security-related keys (e.g., Disabled Windows Defender, Modified UAC settings, Changed system policies)  
-- **Check `DeviceProcessEvents`** to look for suspicious processes used to execute configuration changes (e.g., regedit.exe, powershell.exe, cmd.exe, sc.exe)  
-- **Check `DeviceNetworkEvents`** to identify unusual network activity following system configuration changes.  
-- **Check `DeviceProcessEvents`** for group policy modifications (e.g., Administrators group)   
- 
+- **Check `DeviceLogonEvents`** for suspicious logon activities, such as multiple logins from distant IP addresses in a short time frame.  
+- **Check `DeviceNetworkEvents`** to identify unusual network activity, including logins from unexpected or foreign IP addresses and VPN-related connections.  
+- **Check `DeviceProcessEvents`** for evidence of tools or scripts used to simulate logins or tamper with authentication mechanisms (e.g., `powershell.exe`, `cmd.exe`).  
+
 ---
 
 ## Steps Taken
