@@ -39,32 +39,31 @@
 ## Related Queries:
 ```kql
 // Detect all login attempts, including location and IP address details
-SigninLogs
-| project Timestamp, UserPrincipalName, AppDisplayName, IPAddress, Location
+DeviceLogonEvents
+| project Timestamp, AccountName, DeviceName, RemoteIpAddress
 
-// Identify login attempts originating from different geographic regions within a short time frame
-SigninLogs
+// Identify login attempts originating from different geographic regions or IPs within a short time frame
+DeviceLogonEvents
 | extend TimeGap = datetime_diff('minute', next(Timestamp), Timestamp)
-| where Location != next(Location) and TimeGap < 30
-| project Timestamp, UserPrincipalName, IPAddress, Location, TimeGap
+| where RemoteIpAddress != next(RemoteIpAddress) and TimeGap < 30
+| project Timestamp, AccountName, DeviceName, RemoteIpAddress, TimeGap
 | order by Timestamp desc
 
-// Flag suspicious IPs that do not match known or frequent login locations for a user
-SigninLogs
-| summarize count() by UserPrincipalName, Location, IPAddress
+// Flag suspicious IPs or devices that have infrequent login activity for a specific user
+DeviceLogonEvents
+| summarize count() by AccountName, DeviceName, RemoteIpAddress
 | where count_ < 5
-| project UserPrincipalName, Location, IPAddress
+| project AccountName, DeviceName, RemoteIpAddress
 
-// Detect administrative actions performed shortly after a suspicious login attempt
-AzureActivity
-| where Caller in (SigninLogs | where Location != next(Location) | project UserPrincipalName)
-| where ActivityStatusValue == "Success"
-| project EventTimeStamp, Caller, OperationName, ActivityStatusValue, ResourceId
+// Detect processes executed shortly after a suspicious login attempt
+DeviceProcessEvents
+| where AccountName in (DeviceLogonEvents | where RemoteIpAddress != next(RemoteIpAddress) | project AccountName)
+| project Timestamp, AccountName, DeviceName, ProcessCommandLine
 
-// Check if user has repeated logins from the same suspicious IP across multiple services
-SigninLogs
-| summarize ServicesAccessed = make_list(AppDisplayName) by UserPrincipalName, IPAddress
-| project UserPrincipalName, IPAddress, ServicesAccessed
+// Check if a user performs logins from multiple devices or IPs across different locations in quick succession
+DeviceLogonEvents
+| summarize DevicesAccessed = make_list(DeviceName) by AccountName, RemoteIpAddress
+| project AccountName, RemoteIpAddress, DevicesAccessed
 ```
 
 ---
