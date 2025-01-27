@@ -29,11 +29,6 @@ Searched for any suspicious logon activities, such as multiple logins from dista
 
 The dataset included login events across multiple devices and user accounts, with notable activity for the account `labuser`. Logins were recorded for various devices, but the focus has been placed on the machine `windows-target-1`, which exhibited activity indicative of potential compromise. Many entries lacked `RemoteIP` details, reducing their relevance to identifying geographic or source anomalies.
 
-The scope was been refined to prioritize:
-- Login events originating from `windows-target-1` to identify patterns of unauthorized access.
-- Activity associated with the account `labuser` to trace potential misuse of credentials.
-- Available `RemoteIP` data to detect geographic variations and potential indicators of lateral movement or external compromise.
-
 **Query used to locate events:**
 
 ```kql
@@ -48,6 +43,11 @@ DeviceLogonEvents
 ### 2. Searched the `DeviceLogonEvents` Table
 
 Searched for login events on the device `windows-target-1` associated with the account `labuser`.
+
+The scope was been refined to prioritize:
+- Login events originating from `windows-target-1` to identify patterns of unauthorized access.
+- Activity associated with the account `labuser` to trace potential misuse of credentials.
+- Available `RemoteIP` data to detect geographic variations and potential indicators of lateral movement or external compromise.
 
 The dataset reveals multiple login events for the user `labuser` on the device `windows-target-1`, originating from two distinct IP addresses. On **Jan 27, 2025, at 11:14:46 AM**, login activity was recorded from the IP `89.117.41.164`. Earlier, at **11:12:31 AM**, a login was recorded from the IP `135.237.186.85`. These logins occurred within a short timeframe, indicating geographically disparate access points.
 
