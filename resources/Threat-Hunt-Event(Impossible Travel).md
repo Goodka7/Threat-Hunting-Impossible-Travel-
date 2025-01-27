@@ -24,15 +24,15 @@
 
 | **Parameter**       | **Description**                                                                 |
 |---------------------|---------------------------------------------------------------------------------|
-| **Name**| DeviceProcessEvents                                                          |
-| **Info**| https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/device-process-events |
-| **Purpose**| Used to track commands and processes executed on the victim machine, such as `ipconfig` to simulate user activity. |
-
-| **Parameter**       | **Description**                                                                 |
-|---------------------|---------------------------------------------------------------------------------|
 | **Name**| DeviceNetworkEvents                                                          |
 | **Info**| https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/device-network-events |
 | **Purpose**| Used to detect network activity, including geographic location changes (e.g., VPN usage) and source/destination IP addresses. |
+
+| **Parameter**       | **Description**                                                                 |
+|---------------------|---------------------------------------------------------------------------------|
+| **Name**| DeviceProcessEvents                                                          |
+| **Info**| https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/device-process-events |
+| **Purpose**| Used to track commands and processes executed on the victim machine, such as `ipconfig` to simulate user activity. |
 
 ---
 
