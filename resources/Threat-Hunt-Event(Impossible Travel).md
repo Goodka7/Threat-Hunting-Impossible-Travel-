@@ -3,14 +3,14 @@
 
 ## Steps Taken by "Bad Actor":
 1. **Initial Login:**
-   - Login from your VM using your current IP.
-   - Access a web service or application using your credentials.
+   - Login to "Victim" computer from a VM using "compromised" credentials.
+   - Run CMD and run "ipconfig" to generate logs.
 2. **Simulated Travel:**
-   - Use a VPN or proxy to switch to a different geographic location (e.g., the US, Europe).
-   - Perform another login attempt on the same service/application.
+   - Use a VPN or proxy to switch to a different geographic location (e.g., Argentina).
+   - Perform another login on the same "victim" computer.
+   - Run CMD and run "ipconfig" to generate logs.
 3. **Post-Attack Behavior:**
-   - Attempt sensitive actions (e.g., modify user settings, view confidential data).
-   - Logout after completing suspicious activity.
+   - Logout after completing "suspicious" activity.
      
 ---
 
