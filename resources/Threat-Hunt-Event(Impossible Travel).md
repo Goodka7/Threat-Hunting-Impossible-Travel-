@@ -42,28 +42,25 @@
 DeviceLogonEvents
 | project Timestamp, AccountName, DeviceName, RemoteIpAddress
 
-// Identify login attempts originating from different geographic regions or IPs within a short time frame
+// Narrow scope for login attempts to a suspicious machine
 DeviceLogonEvents
-| extend TimeGap = datetime_diff('minute', next(Timestamp), Timestamp)
-| where RemoteIpAddress != next(RemoteIpAddress) and TimeGap < 30
-| project Timestamp, AccountName, DeviceName, RemoteIpAddress, TimeGap
+| where DeviceName == "" and AccountName == ""
+| project Timestamp, AccountName, DeviceName, RemoteIP
 | order by Timestamp desc
 
-// Flag suspicious IPs or devices that have infrequent login activity for a specific user
-DeviceLogonEvents
-| summarize count() by AccountName, DeviceName, RemoteIpAddress
-| where count_ < 5
-| project AccountName, DeviceName, RemoteIpAddress
+// Detect network activity initiated by a specific user within a defined timeframe 
+DeviceNetworkEvents
+| where DeviceName == "" and InitiatingProcessAccountName == ""
+| where Timestamp >= datetime() and Timestamp <= datetime()
+| project Timestamp, DeviceName, RemoteIP, LocalIP, ActionType, InitiatingProcessAccountName, InitiatingProcessCommandLine
+| order by Timestamp desc
 
-// Detect processes executed shortly after a suspicious login attempt
+// // Detect process executions by a specific user involving key system tools
 DeviceProcessEvents
-| where AccountName in (DeviceLogonEvents | where RemoteIpAddress != next(RemoteIpAddress) | project AccountName)
-| project Timestamp, AccountName, DeviceName, ProcessCommandLine
-
-// Check if a user performs logins from multiple devices or IPs across different locations in quick succession
-DeviceLogonEvents
-| summarize DevicesAccessed = make_list(DeviceName) by AccountName, RemoteIpAddress
-| project AccountName, RemoteIpAddress, DevicesAccessed
+| where DeviceName == "" and AccountName == ""
+| where FileName in ("powershell.exe", "cmd.exe")
+| project Timestamp, AccountName, DeviceName, FileName, ProcessCommandLine
+| order by Timestamp desc
 ```
 
 ---
