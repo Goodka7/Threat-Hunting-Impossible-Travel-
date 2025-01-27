@@ -40,7 +40,7 @@ DeviceLogonEvents
 
 ---
 
-### 2. Searched the `DeviceLogonEvents` Table
+### 2. Searched the `DeviceLogonEvents` Table Again
 
 Searched for login events on the device `windows-target-1` associated with the account `labuser`.
 
