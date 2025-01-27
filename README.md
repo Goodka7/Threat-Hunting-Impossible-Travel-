@@ -67,41 +67,44 @@ DeviceLogonEvents
 
 ### 3. Searched the `DeviceNetworksEvents` Table
 
-Searched for any network activity that may give clues to malicious acts.
+### Process and Network Activity Analysis
 
-The dataset reveals significant network activity originating from the device "thscenariovm." On **Jan 26, 2025, at 12:49:12 PM**, `powershell.exe` initiated multiple successful connections to `raw.githubusercontent.com` (IP address `185.199.111.133`) over HTTPS (port 443). Similarly, another connection to `raw.githubusercontent.com` (IP address `185.199.110.133`) was observed at **1:16:15 PM**, also using `powershell.exe`. These domains are known to host scripts and files, suggesting potential script download or execution activity. 
+Searched for process and network events on the device `windows-target-1` to correlate with login activity associated with `labuser`.
 
-The use of `powershell.exe` for network communication and repeated connections to script-hosting domains aligns with concerns about unauthorized activities and tampering with system configurations. These events warrant further investigation to assess whether they involve the execution of malicious scripts or unauthorized system changes.
+The dataset reveals network activity involving external connections that align with the simulated login traffic. On **Jan 27, 2025, at 11:12:31 AM**, an external connection was made to `135.237.186.85`, which matches the IP address associated with the earlier login event. At **11:14:46 AM**, another connection was observed to `89.117.41.164`, which corresponds to the second recorded login from a distinct geographic location. These connections were initiated shortly after the logins and suggest that the system communicated with external servers following user authentication.
 
+No unusual processes such as `cmd.exe` or `powershell.exe` were identified in this dataset. The network activity captured confirms the geographic disparity between login events, further supporting the Impossible Travel behavior. Additional validation against other datasets may provide further insight into whether this activity reflects legitimate access or potential obfuscation techniques.
 
 **Query used to locate events:**
 
 ```kql
 DeviceNetworkEvents
-| where DeviceName == "thscenariovm"
-| where RemotePort in (3389, 445, 135) or RemoteUrl has_any (".onion", "raw.githubusercontent.com", "unknown-domain")
-| where ActionType in ("ConnectionSuccess", "ConnectionFailed")
-| project Timestamp, DeviceName, RemoteIP, RemotePort, RemoteUrl, ActionType, InitiatingProcessFileName, InitiatingProcessAccountName
+| where DeviceName == "windows-target-1"
+| project Timestamp, DeviceName, RemoteIP, LocalIP, ActionType, InitiatingProcessCommandLine
+| order by Timestamp desc
 ```
-<img width="1212" alt="image" src="https://github.com/user-attachments/assets/58865235-2a2c-4c44-ab32-dd0c0b933b23">
+<img width="1212" alt="image" src="https://github.com/user-attachments/assets/ecd7b602-46fc-479c-912b-056e058b1963">
 
 ---
 
 ### 4. Searched the `DeviceProcessEvents` Table
 
-Further searched for unusual changes, particularly with the word "administrators" in the command line.
+### Analysis of `DeviceProcessEvents`
 
-The dataset reveals activity related to the addition of a user to the `Administrators` group on the device "thscenariovm." On **Jan 26, 2025, at 1:08:42 PM**, the command `"net.exe" localgroup administrators NewAdminAccount /add` was executed by the user `labuser`, successfully adding the account `NewAdminAccount` to the `Administrators` group. 
+Searched for evidence of tools or scripts used to simulate logins or tamper with authentication mechanisms on the device `windows-target-1`.
 
-Additionally, a second command, `"net.exe" localgroup administrators`, was executed at **Jan 26, 2025, at 1:09:56 PM**, listing the members of the `Administrators` group, which confirms the account was successfully added.
+The dataset reveals multiple instances of `cmd.exe` executed by the account `labuser` on `windows-target-1`. On **Jan 27, 2025, at 11:15:06 AM**, `cmd.exe` was executed, followed by another execution at **11:12:48 AM**. An earlier execution of `cmd.exe` was recorded at **10:36:26 AM**. No other tools, such as `powershell.exe`, were identified in this dataset.
+
+The use of `cmd.exe` aligns with expected behavior in the context of this analysis, as it was used during the simulation to generate network-related commands, such as `ipconfig`. Further validation against other datasets may help determine whether this activity was part of a controlled simulation or indicative of unauthorized actions.
 
 **Query used to locate events:**
 
 ```kql
 DeviceProcessEvents
-| where DeviceName == "thscenariovm"
-| where ProcessCommandLine has "administrators"
-| project Timestamp, DeviceName, FileName, ProcessCommandLine, InitiatingProcessAccountName
+| where DeviceName == "windows-target-1" and AccountName == "labuser"
+| where FileName in ("powershell.exe", "cmd.exe")
+| project Timestamp, AccountName, DeviceName, FileName, ProcessCommandLine
+| order by Timestamp desc
 ```
 <img width="1212" alt="image" src="https://github.com/user-attachments/assets/aed5e71a-8641-4b5b-bf64-119cc0f9a010">
 
