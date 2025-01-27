@@ -67,11 +67,13 @@ DeviceLogonEvents
 
 ### 3. Searched the `DeviceNetworksEvents` Table
 
-Searched for process and network events on the device `windows-target-1` to correlate with login activity associated with `labuser`.
+Searched for network activity on the device `windows-target-1` within the specified time range, filtering for actions initiated by the account `labuser`.
 
-The dataset reveals network activity involving external connections that align with the simulated login traffic. On **Jan 27, 2025, at 11:12:31 AM**, an external connection was made to `135.237.186.85`, which matches the IP address associated with the earlier login event. At **11:14:46 AM**, another connection was observed to `89.117.41.164`, which corresponds to the second recorded login from a distinct geographic location. These connections were initiated shortly after the logins and suggest that the system communicated with external servers following user authentication.
+The dataset reveals multiple successful network connections initiated by processes tied to the account `labuser`. On **Jan 27, 2025, at 11:12:49 AM**, a connection was established to the external IP `4.153.57.10` via `smartscreen.exe`, a process associated with Windows SmartScreen. Additional connections were made shortly thereafter using `SearchApp.exe` at **11:12:48 AM** and **11:12:47 AM**, reaching IPs such as `13.107.246.41` and `150.171.84.254`. These processes indicate legitimate post-login activity from the user, reinforcing evidence of interaction on the system.
 
-No unusual processes such as `cmd.exe` or `powershell.exe` were identified in this dataset. The network activity captured confirms the geographic disparity between login events, further supporting the Impossible Travel behavior. Additional validation against other datasets may provide further insight into whether this activity reflects legitimate access or potential obfuscation techniques.
+While the observed network activity does not directly correspond to the `RemoteIP` addresses from the login events, it supports the timeline of events surrounding the logins. This validates that the account `labuser` was actively performing actions during the specified timeframe, lending credibility to the login events as part of a larger behavioral pattern. Additional investigation of the `RemoteIP` addresses may provide further clarity, particularly regarding their geographic origins or connections to known infrastructure.
+
+This information strengthens the case for Impossible Travel by confirming active use of the account during and immediately after the login events, supporting the broader context of the investigation.
 
 **Query used to locate events:**
 
@@ -94,7 +96,7 @@ Searched for evidence of tools or scripts used to simulate logins or tamper with
 
 The dataset reveals multiple instances of `cmd.exe` executed by the account `labuser` on `windows-target-1`. On **Jan 27, 2025, at 11:15:06 AM**, `cmd.exe` was executed, followed by another execution at **11:12:48 AM**. An earlier execution of `cmd.exe` was recorded at **10:36:26 AM**. No other tools, such as `powershell.exe`, were identified in this dataset.
 
-The use of `cmd.exe` aligns with expected behavior in the context of this analysis, as it was used during the simulation to generate network-related commands, such as `ipconfig`. Further validation against other datasets may help determine whether this activity was part of a controlled simulation or indicative of unauthorized actions.
+The use of `cmd.exe` indicates interactive activity on the system and corresponds with observed login events. Commands such as `ipconfig` may have been executed to validate network configurations or system information during user activity. While these actions may align with legitimate use, further investigation is required to determine whether they represent authorized actions or potential misuse.
 
 **Query used to locate events:**
 
@@ -111,47 +113,28 @@ DeviceProcessEvents
 
 ## Chronological Event Timeline
 
-### 1. Registry Modification - Disable UAC
-- **Time:** `1:03:30 PM, January 26, 2025`
-- **Event:** The user "labuser" executed a command using `cmd.exe` that disabled User Account Control (UAC) by modifying the registry key `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System`.
-- **Action:** Registry value modification detected.
-- **Command:** `Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableLUA" -Value 0`
+### 1. Login Event and Command Execution
+- **Time:** `11:12:31 AM, January 27, 2025`
+- **Event:** A login was recorded for the account `labuser` from the IP address `135.237.186.85` on the device `windows-target-1`.
+- **Action:** Shortly after, a process initiated by `cmd.exe` executed the command `ipconfig` to retrieve network configuration details.
 - **Initiating Process:** `cmd.exe`
 
-### 2. Windows Defender Disabled
-- **Time:** `1:03:10 PM, January 26, 2025`
-- **Event:** Windows Defender real-time monitoring was disabled via `powershell.exe` using the `Set-MpPreference` command.
-- **Action:** Process executed to modify security settings.
-- **Command:** `Set-MpPreference -DisableRealtimeMonitoring $true`
-
-### 3. Administrators Group Modified
-- **Time:** `1:08:42 PM, January 26, 2025`
-- **Event:** The user "labuser" executed a command using `net.exe` to add the account `NewAdminAccount` to the `Administrators` group.
-- **Action:** Process detected adding a new administrator account.
-- **Command:** `net.exe localgroup administrators NewAdminAccount /add`
-- **Initiating Process:** `net.exe`
-- **Group:** `Administrators`
-- **Account Name:** `NewAdminAccount`
-
-### 4. Registry Modification - Cached Updates Deleted
-- **Time:** `1:03:30 PM, January 26, 2025`
-- **Event:** A registry key modification was made to delete cached standalone update binaries from `HKEY_CURRENT_USER\SOFTWARE\Microsoft\WindowsUpdate`.
-- **Action:** Registry value deleted.
-- **Command:** `cmd.exe /q /c del /q "C:\Users\labuser\Updates\Standalone"`
+### 2. Second Login Event from a Different Location
+- **Time:** `11:14:46 AM, January 27, 2025`
+- **Event:** Another login was recorded for the same account `labuser` from the IP address `89.117.41.164` on the same device.
+- **Action:** Following this login, another instance of `cmd.exe` was executed to run the `ipconfig` command.
 - **Initiating Process:** `cmd.exe`
-- **Registry Key:** `HKEY_CURRENT_USER\SOFTWARE\Microsoft\WindowsUpdate`
-- **Registry Value Name:** `Delete Cached Standalone Update Binary`
 
 ---
 
 ## Summary
 
-The user "labuser" on the device "thscenariovm" performed a series of actions that align with tampering with critical system configurations. Key findings include the disabling of UAC and Windows Defender, as well as the addition of a new local administrator account to the `Administrators` group. These actions were executed using `cmd.exe` and `powershell.exe`, indicating deliberate attempts to weaken the system's security posture. Additionally, cached update binaries were deleted, which could disrupt system updates and prevent the application of security patches. The registry changes and process executions observed suggest potential malicious intent and warrant immediate investigation to assess the impact and prevent further exploitation.
+The user "labuser" on the device "windows-target-1" performed a series of actions that align with suspicious behavior. Key findings include geographically disparate logins originating from two different IP addresses within a short time frame, suggesting potential credential compromise or the use of obfuscation techniques such as a VPN. Following these logins, `cmd.exe` was executed twice to run the `ipconfig` command, which may indicate an attempt to validate network configurations after login. These actions, while not conclusively malicious, warrant further investigation to determine whether they represent unauthorized activity or legitimate user behavior.
 
 ---
 
 ## Response Taken
 
-Unauthorized System Configuration activity was confirmed on the endpoint `thscenariovm` by the user `labuser`. The device was immediately isolated to prevent further potential misuse, and the user's direct manager was notified for follow-up investigation, remediation and potential disciplinary action.
+Suspicious activity was confirmed on the endpoint `windows-target-1` by the user `labuser`. Anomalous login behavior, combined with subsequent command execution, suggests the possibility of credential misuse. The device has been flagged for monitoring, and a recommendation has been made to isolate it if further suspicious behavior is observed. A detailed report has been provided to the manager to determine next steps, which may include credential resets for the affected account, a deeper investigation into the identified IPs, and reviewing access policies to prevent recurrence.
 
 ---
