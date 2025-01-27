@@ -67,8 +67,6 @@ DeviceLogonEvents
 
 ### 3. Searched the `DeviceNetworksEvents` Table
 
-### Process and Network Activity Analysis
-
 Searched for process and network events on the device `windows-target-1` to correlate with login activity associated with `labuser`.
 
 The dataset reveals network activity involving external connections that align with the simulated login traffic. On **Jan 27, 2025, at 11:12:31 AM**, an external connection was made to `135.237.186.85`, which matches the IP address associated with the earlier login event. At **11:14:46 AM**, another connection was observed to `89.117.41.164`, which corresponds to the second recorded login from a distinct geographic location. These connections were initiated shortly after the logins and suggest that the system communicated with external servers following user authentication.
