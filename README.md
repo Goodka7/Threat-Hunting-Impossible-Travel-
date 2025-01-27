@@ -77,11 +77,12 @@ No unusual processes such as `cmd.exe` or `powershell.exe` were identified in th
 
 ```kql
 DeviceNetworkEvents
-| where DeviceName == "windows-target-1"
-| project Timestamp, DeviceName, RemoteIP, LocalIP, ActionType, InitiatingProcessCommandLine
+| where DeviceName == "windows-target-1" and InitiatingProcessAccountName == "labuser"
+| where Timestamp >= datetime(2025-01-27T02:36:26.576202Z) and Timestamp <= datetime(2025-01-27T03:15:06.3246301Z)
+| project Timestamp, DeviceName, RemoteIP, LocalIP, ActionType, InitiatingProcessAccountName, InitiatingProcessCommandLine
 | order by Timestamp desc
 ```
-<img width="1212" alt="image" src="https://github.com/user-attachments/assets/ecd7b602-46fc-479c-912b-056e058b1963">
+<img width="1212" alt="image" src="https://github.com/user-attachments/assets/92db7d4a-d5c2-4695-bb18-45d5de33944e">
 
 ---
 
